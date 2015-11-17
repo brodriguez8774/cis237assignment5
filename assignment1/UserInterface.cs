@@ -12,17 +12,31 @@ namespace assignment1
     class UserInterface
     {
         const int maxMenuChoice = 5;
-        //---------------------------------------------------
-        //Public Methods
-        //---------------------------------------------------
 
-        //Display Welcome Greeting
+
+        #region Public Methods
+
+        /// <summary>
+        /// Display Welcome Greeting (Pt 1).
+        /// </summary>
         public void DisplayWelcomeGreeting()
         {
-            Console.WriteLine("Welcome to the wine program");
+            Console.WriteLine("Welcome to the wine program" + Environment.NewLine +
+                "Connecting to Database...");
         }
 
-        //Display Menu And Get Response
+        /// <summary>
+        /// Display Welcome Greeting (Pt 2).
+        /// </summary>
+        public void DisplayWelcomeGreetingConnected()
+        {
+            Console.WriteLine("Connected!");
+        }
+
+        /// <summary>
+        /// Display Menu And Get Response.
+        /// </summary>
+        /// <returns></returns>
         public int DisplayMenuAndGetResponse()
         {
             //declare variable to hold the selection
@@ -30,22 +44,22 @@ namespace assignment1
 
             //Display menu, and prompt
             this.displayMenu();
-            this.displayPrompt();
+            this.DisplayUserPrompt();
 
             //Get the selection they enter
-            selection = this.getSelection();
+            selection = this.GetSelection();
 
             //While the response is not valid
-            while (!this.verifySelectionIsValid(selection))
+            while (!this.VerifySelectionIsValid(selection))
             {
                 //display error message
-                this.displayErrorMessage();
+                this.DisplayMenuSelectionErrorMessage();
 
                 //display the prompt again
-                this.displayPrompt();
+                this.DisplayUserPrompt();
 
                 //get the selection again
-                selection = this.getSelection();
+                selection = this.GetSelection();
             }
             //Return the selection casted to an integer
             return Int32.Parse(selection);
@@ -138,11 +152,15 @@ namespace assignment1
         }
 
 
-        //---------------------------------------------------
-        //Private Methods
-        //---------------------------------------------------
+        #endregion
 
-        //Display the Menu
+
+
+        #region Private Methods
+        
+        /// <summary>
+        /// Display the Main Menu.
+        /// </summary>
         private void displayMenu()
         {
             Console.WriteLine();
@@ -155,28 +173,39 @@ namespace assignment1
             Console.WriteLine("5. Exit Program");
         }
 
-        //Display the Prompt
-        private void displayPrompt()
+        /// <summary>
+        /// Display the User Prompt.
+        /// </summary>
+        private void DisplayUserPrompt()
         {
             Console.WriteLine();
             Console.Write("Enter Your Choice: ");
         }
 
-        //Display the Error Message
-        private void displayErrorMessage()
+        /// <summary>
+        /// Display the Error Message for Menu Selection.
+        /// </summary>
+        private void DisplayMenuSelectionErrorMessage()
         {
             Console.WriteLine();
             Console.WriteLine("That is not a valid option. Please make a valid choice");
         }
 
-        //Get the selection from the user
-        private string getSelection()
+        /// <summary>
+        /// Get input from the user.
+        /// </summary>
+        /// <returns>String of user's input.</returns>
+        private string GetSelection()
         {
             return Console.ReadLine();
         }
 
-        //Verify that a selection from the main menu is valid
-        private bool verifySelectionIsValid(string selection)
+        /// <summary>
+        /// Verify that a selection from the main menu is valid
+        /// </summary>
+        /// <param name="selection">String of user's current input.</param>
+        /// <returns>Bool indicating if user's input is valid.</returns>
+        private bool VerifySelectionIsValid(string selection)
         {
             //Declare a returnValue and set it to false
             bool returnValue = false;
@@ -203,5 +232,8 @@ namespace assignment1
             //Return the reutrnValue
             return returnValue;
         }
+
+        #endregion
+
     }
 }

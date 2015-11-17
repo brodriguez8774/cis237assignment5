@@ -9,25 +9,81 @@ using System.Threading.Tasks;
 
 namespace assignment1
 {
-    class WineItemCollection : IWineCollection
+    class WineItemCollection
     {
-        //Private Variables
+        #region Variables
+
+        BeverageDBEntities beverageEntities = new BeverageDBEntities();
+
+        /* Variables used for reading from CSV file */
         WineItem[] wineItems;
         int wineItemsLength;
 
-        //Constuctor. Must pass the size of the collection.
+        #endregion
+
+
+
+        #region Constructor
+
+        /// <summary>
+        /// Base Constructor.
+        /// </summary>
+        public WineItemCollection()
+        {
+
+        }
+
+        /// <summary>
+        /// //Constuctor which needs size of the collection.
+        /// </summary>
+        /// <param name="size"></param>
         public WineItemCollection(int size)
         {
             wineItems = new WineItem[size];
             wineItemsLength = 0;
         }
 
-        //Add a new item to the collection
-        public void AddNewItem(string id, string description, string pack)
+        #endregion
+
+
+
+        #region Methods
+
+        /// <summary>
+        /// Add a new item to the collection.
+        /// </summary>
+        /// <param name="id">Unique ID of beverage item.</param>
+        /// <param name="name">Name of beverage item.</param>
+        /// <param name="pack">Pack Size of beverage item.</param>
+        /// <param name="price">Price of beverage pack.</param>
+        /// <param name="active">Bool for beverage currently active or not.</param>
+        /// <returns>Bool indicating if item was added.</returns>
+        public bool AddNewItem(string id, string name, string pack, decimal price, Boolean active)
         {
-            //Add a new WineItem to the collection. Increase the Length variable.
-            wineItems[wineItemsLength] = new WineItem(id, description, pack);
-            wineItemsLength++;
+            // Attempt to create a new beverage.
+            try
+            {
+                // If ID is not already in database.
+                if (FindById(id) != null)
+                {
+                    // Create new beverage with passed in information.
+                    Beverage beverage = new Beverage();
+                    beverage.id = id;
+                    beverage.name = name;
+                    beverage.pack = pack;
+                    beverage.price = price;
+                    beverage.active = active;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
         }
         
         //Get The Print String Array For All Items
@@ -57,29 +113,31 @@ namespace assignment1
             return allItemStrings;
         }
 
-        //Find an item by it's Id
+        /// <summary>
+        /// Find an item by its ID.
+        /// </summary>
+        /// <param name="id">String of item's unique ID.</param>
+        /// <returns>Null if ID is not present, otherwise string of beverage's information.</returns>
         public string FindById(string id)
         {
             //Declare return string for the possible found item
             string returnString = null;
 
-            //For each WineItem in wineItems
-            foreach (WineItem wineItem in wineItems)
+            //Search through database for ID.
+            Beverage foundBeverage = beverageEntities.Beverages.Find(id);
+
+            // If beverage is found in database
+            if (foundBeverage != null)
             {
-                //If the wineItem is not null
-                if (wineItem != null)
-                {
-                    //if the wineItem Id is the same as the search id
-                    if (wineItem.Id == id)
-                    {
-                        //Set the return string to the result of the wineItem's ToString method
-                        returnString = wineItem.ToString();
-                    }
-                }
+                returnString = foundBeverage.id + " " + foundBeverage.name + Environment.NewLine +
+                    foundBeverage.pack + " " + foundBeverage.price + " " + foundBeverage.active;
             }
+            
             //Return the returnString
             return returnString;
         }
+
+        #endregion
 
     }
 }

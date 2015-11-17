@@ -48,21 +48,6 @@ namespace assignment1
                 switch (choice)
                 {
                     case 1:
-                        //Load the CSV File
-                        bool success = csvProcessor.ImportCSV(wineItemCollection, pathToCSVFile);
-                        if (success)
-                        {
-                            //Display Success Message
-                            userInterface.DisplayImportSuccess();
-                        }
-                        else
-                        {
-                            //Display Fail Message
-                            userInterface.DisplayImportError();
-                        }
-                        break;
-
-                    case 2:
                         //Print Entire List Of Items
                         string[] allItems = wineItemCollection.GetPrintStringsForAllItems();
                         if (allItems.Length > 0)
@@ -77,7 +62,7 @@ namespace assignment1
                         }
                         break;
 
-                    case 3:
+                    case 2:
                         //Search For An Item
                         string searchQuery = userInterface.GetSearchQuery();
                         string itemInformation = wineItemCollection.FindById(searchQuery);
@@ -91,7 +76,7 @@ namespace assignment1
                         }
                         break;
 
-                    case 4:
+                    case 3:
                         //Add A New Item To The List
                         string[] newItemInformation = userInterface.GetNewItemInformation();
                         if (wineItemCollection.FindById(newItemInformation[0]) == null)
@@ -103,6 +88,10 @@ namespace assignment1
                         {
                             userInterface.DisplayItemAlreadyExistsError();
                         }
+                        break;
+
+                    case 4:
+                        // Delete item from list.
                         break;
                 }
 
