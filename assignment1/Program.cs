@@ -6,7 +6,8 @@
  *      "4 classes", including a Beverage and Beverages? Isn't Beverage provided by beverages database?
  * 2) Error with foreach entry in database.
  * 3) When to use singletons. (Only one instance of beverage collection is needed. Should that be static or singleton? Or neither? Same with UI)
- * */
+ * Martin Fowler: Patterns of Enterprise Application Architecture
+ */
 
 
 /*
@@ -42,7 +43,7 @@ namespace Assignment5
             BeverageCollection beverageCollection = new BeverageCollection();
 
             // Load in/connect to Beverages from database.
-            BeverageDBEntities beverageEntities = new BeverageDBEntities();
+            BeverageEntities beverageEntities = new BeverageEntities();
 
             //Display the Welcome Message to the user
             userInterface.DisplayWelcomeGreeting();

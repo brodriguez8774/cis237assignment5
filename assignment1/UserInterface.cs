@@ -123,11 +123,11 @@ namespace Assignment5
         public void DisplayAllListItems(GenericLinkedList<string> allItemsOutput)
         {
             Console.WriteLine();
-            foreach (string itemOutput in allItemsOutput)
+            /*foreach (string itemOutput in allItemsOutput)
             {
                 Console.WriteLine(itemOutput);
                 allItemsOutput.DeQueue();
-            }
+            }*/
         }
 
         //Display All Items Error

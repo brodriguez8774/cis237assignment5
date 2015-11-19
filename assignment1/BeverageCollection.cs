@@ -13,7 +13,7 @@ namespace Assignment5
     {
         #region Variables
 
-        BeverageDBEntities beverageEntities = new BeverageDBEntities();
+        BeverageEntities beverageEntities = new BeverageEntities();
 
         /* Variables used for reading from CSV file */
         //WineItem[] wineItems;

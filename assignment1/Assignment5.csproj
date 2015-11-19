@@ -80,7 +80,9 @@
     <Compile Include="BeverageCollection.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <EntityDeploy Include="BeverageDBContext.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>BeverageDBContext.Designer.cs</LastGenOutput>
