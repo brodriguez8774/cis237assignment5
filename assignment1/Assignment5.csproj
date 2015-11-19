@@ -7,7 +7,7 @@
     <ProjectGuid>{70225A93-55F0-46EB-B794-C349E0C16A68}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>assignment1</RootNamespace>
+    <RootNamespace>Assignment5</RootNamespace>
     <AssemblyName>assignment1</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -41,6 +41,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
@@ -69,12 +70,14 @@
       <DependentUpon>BeverageDBContext.edmx</DependentUpon>
     </Compile>
     <Compile Include="CSVProcessor.cs" />
+    <Compile Include="GenericLinkedList.cs" />
+    <Compile Include="GenericNode.cs" />
     <Compile Include="IWineCollection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserInterface.cs" />
     <Compile Include="WineItem.cs" />
-    <Compile Include="WineItemCollection.cs" />
+    <Compile Include="BeverageCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

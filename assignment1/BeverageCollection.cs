@@ -1,23 +1,23 @@
 ﻿//Author: David Barnes
-//CIS 237
-//Assignment 1
+// Edit: Brandon Rodriguez
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace assignment1
+namespace Assignment5
 {
-    class WineItemCollection
+    class BeverageCollection
     {
         #region Variables
 
         BeverageDBEntities beverageEntities = new BeverageDBEntities();
 
         /* Variables used for reading from CSV file */
-        WineItem[] wineItems;
-        int wineItemsLength;
+        //WineItem[] wineItems;
+        //int wineItemsLength;
 
         #endregion
 
@@ -28,12 +28,12 @@ namespace assignment1
         /// <summary>
         /// Base Constructor.
         /// </summary>
-        public WineItemCollection()
+        public BeverageCollection()
         {
 
         }
 
-        /// <summary>
+ /*       /// <summary>
         /// //Constuctor which needs size of the collection.
         /// </summary>
         /// <param name="size"></param>
@@ -41,7 +41,7 @@ namespace assignment1
         {
             wineItems = new WineItem[size];
             wineItemsLength = 0;
-        }
+        }*/
 
         #endregion
 
@@ -87,11 +87,20 @@ namespace assignment1
         }
         
         //Get The Print String Array For All Items
-        public string[] GetPrintStringsForAllItems()
+        public GenericLinkedList<string> GetStringListForAllItems()
         {
-            //Create and array to hold all of the printed strings
-            string[] allItemStrings = new string[wineItemsLength];
-            //set a counter to be used
+            //Create a linked list to hold all of the printed strings
+            GenericLinkedList<string> beveragesList = new GenericLinkedList<string>();
+
+            
+
+            // Loops through table and adds each to list.
+            foreach (Beverage beverage in beverageEntities.Beverages)
+            {
+                beveragesList.Enqueue(UserInterface.ItemToString(beverage));
+            }
+
+            /*//set a counter to be used
             int counter = 0;
 
             //If the wineItemsLength is greater than 0, create the array of strings
@@ -108,9 +117,9 @@ namespace assignment1
                         counter++;
                     }
                 }
-            }
+            }*/
             //Return the array of item strings
-            return allItemStrings;
+            return beveragesList;
         }
 
         /// <summary>
@@ -129,8 +138,7 @@ namespace assignment1
             // If beverage is found in database
             if (foundBeverage != null)
             {
-                returnString = foundBeverage.id + " " + foundBeverage.name + Environment.NewLine +
-                    foundBeverage.pack + " " + foundBeverage.price + " " + foundBeverage.active;
+                UserInterface.ItemToString(foundBeverage);
             }
             
             //Return the returnString

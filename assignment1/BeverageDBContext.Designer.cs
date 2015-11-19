@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'O:\2015_Classes\CIS_237\CIS237Assignment5\assignment1\BeverageDBContext.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\Waffy\Desktop\School\2015\CIS_237\CIS237Assignment5\assignment1\BeverageDBContext.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

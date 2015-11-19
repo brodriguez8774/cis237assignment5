@@ -1,13 +1,13 @@
 ﻿//Author: David Barnes
-//CIS 237
-//Assignment 1
+// Edit: Brandon Rodriguez
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace assignment1
+namespace Assignment5
 {
     class UserInterface
     {
@@ -65,7 +65,10 @@ namespace assignment1
             return Int32.Parse(selection);
         }
 
-        //Get the search query from the user
+        /// <summary>
+        /// Get the search query from the user
+        /// </summary>
+        /// <returns>Console Input from user.</returns>
         public string GetSearchQuery()
         {
             Console.WriteLine();
@@ -78,17 +81,25 @@ namespace assignment1
         public string[] GetNewItemInformation()
         {
             Console.WriteLine();
-            Console.WriteLine("What is the new items Id?");
+            Console.WriteLine("What is the new item's Id?");
             Console.Write("> ");
             string id = Console.ReadLine();
-            Console.WriteLine("What is the new items Description?");
+            Console.WriteLine("What is the new item's Name?");
             Console.Write("> ");
-            string description = Console.ReadLine();
-            Console.WriteLine("What is the new items Pack?");
+            string name = Console.ReadLine();
+            Console.WriteLine("What is the new item's Pack?");
             Console.Write("> ");
             string pack = Console.ReadLine();
+            Console.WriteLine("What is the new item's Price?" + Environment.NewLine +
+                                "Please enter in #.## format");
+            Console.Write("> ");
+            string price = Console.ReadLine();
+            Console.WriteLine("Is the new item going to be immediately Active?" + Environment.NewLine +
+                                "Please enter 'T' or 'F'");
+            Console.Write("> ");
+            string active = Console.ReadLine();
 
-            return new string[] { id, description, pack };
+            return new string[] { id, name, pack, price, active };
         }
 
         //Display Import Success
@@ -105,13 +116,17 @@ namespace assignment1
             Console.WriteLine("There was an error importing the CSV");
         }
 
-        //Display All Items
-        public void DisplayAllItems(string[] allItemsOutput)
+        /// <summary>
+        /// Displays output of all items inside linked list.
+        /// </summary>
+        /// <param name="allItemsOutput">Linked List filled with strings from database information.</param>
+        public void DisplayAllListItems(GenericLinkedList<string> allItemsOutput)
         {
             Console.WriteLine();
             foreach (string itemOutput in allItemsOutput)
             {
                 Console.WriteLine(itemOutput);
+                allItemsOutput.DeQueue();
             }
         }
 
@@ -122,7 +137,10 @@ namespace assignment1
             Console.WriteLine("There are no items in the list to print");
         }
 
-        //Display Item Found Success
+        /// <summary>
+        /// Display Item Found Success
+        /// </summary>
+        /// <param name="itemInformation"></param>
         public void DisplayItemFound(string itemInformation)
         {
             Console.WriteLine();
@@ -151,6 +169,16 @@ namespace assignment1
             Console.WriteLine("An Item With That Id Already Exists");
         }
 
+        /// <summary>
+        /// Converts Beverage information into full string.
+        /// </summary>
+        /// <param name="beverage">Beverage to make a string of.</param>
+        /// <returns>String of Beverage's information.</returns>
+        public static string ItemToString(Beverage beverage)
+        {
+            return beverage.id + " " + beverage.name + Environment.NewLine +
+                    beverage.pack + " " + beverage.price + " " + beverage.active;
+        }
 
         #endregion
 

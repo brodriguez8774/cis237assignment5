@@ -1,6 +1,14 @@
 ﻿//Author: David Barnes
-//CIS 237
-//Assignment 1
+// Edit: Brandon Rodriguez
+
+/*  ASK ABOUT:
+ * 1) Solution Requirements:
+ *      "4 classes", including a Beverage and Beverages? Isn't Beverage provided by beverages database?
+ * 2) Error with foreach entry in database.
+ * 3) When to use singletons. (Only one instance of beverage collection is needed. Should that be static or singleton? Or neither? Same with UI)
+ * */
+
+
 /*
  * The Menu Choices Displayed By The UI
  * 1. Load Wine List From CSV
@@ -15,26 +23,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace assignment1
+namespace Assignment5
 {
     class Program
     {
         static void Main(string[] args)
         {
             //Set a constant for the size of the collection
-            const int wineItemCollectionSize = 4000;
+            //const int wineItemCollectionSize = 4000;
 
             //Set a constant for the path to the CSV File
-            const string pathToCSVFile = "../../../datafiles/winelist.csv";
+            //const string pathToCSVFile = "../../../datafiles/winelist.csv";
 
             //Create an instance of the UserInterface class
             UserInterface userInterface = new UserInterface();
 
             //Create an instance of the WineItemCollection class
-            IWineCollection wineItemCollection = new WineItemCollection(wineItemCollectionSize);
+            BeverageCollection beverageCollection = new BeverageCollection();
 
-            //Create an instance of the CSVProcessor class
-            CSVProcessor csvProcessor = new CSVProcessor();
+            // Load in/connect to Beverages from database.
+            BeverageDBEntities beverageEntities = new BeverageDBEntities();
 
             //Display the Welcome Message to the user
             userInterface.DisplayWelcomeGreeting();
@@ -49,15 +57,15 @@ namespace assignment1
                 {
                     case 1:
                         //Print Entire List Of Items
-                        string[] allItems = wineItemCollection.GetPrintStringsForAllItems();
-                        if (allItems.Length > 0)
+                        GenericLinkedList<string> stringList = beverageCollection.GetStringListForAllItems();
+                        if (stringList.Length > 0)
                         {
-                            //Display all of the items
-                            userInterface.DisplayAllItems(allItems);
+                            //Display all of the items in linked list.
+                            userInterface.DisplayAllListItems(stringList);
                         }
                         else
                         {
-                            //Display error message for all items
+                            //Display error message for all items.
                             userInterface.DisplayAllItemsError();
                         }
                         break;
@@ -65,7 +73,20 @@ namespace assignment1
                     case 2:
                         //Search For An Item
                         string searchQuery = userInterface.GetSearchQuery();
-                        string itemInformation = wineItemCollection.FindById(searchQuery);
+
+                        Beverage beverageToFind = beverageEntities.Beverages.Where(a => a.id == searchQuery).First();
+                        Beverage otherBeverageToFind = beverageEntities.Beverages.Find(searchQuery);
+
+                        if (otherBeverageToFind != null)
+                        {
+                            userInterface.DisplayItemFound(otherBeverageToFind.id);
+                        }
+                        else
+                        {
+                            userInterface.DisplayItemFoundError();
+                        }
+
+                        /*string itemInformation = beverageCollection.FindById(searchQuery);
                         if (itemInformation != null)
                         {
                             userInterface.DisplayItemFound(itemInformation);
@@ -73,21 +94,24 @@ namespace assignment1
                         else
                         {
                             userInterface.DisplayItemFoundError();
-                        }
+                        }*/
                         break;
 
                     case 3:
                         //Add A New Item To The List
-                        string[] newItemInformation = userInterface.GetNewItemInformation();
-                        if (wineItemCollection.FindById(newItemInformation[0]) == null)
+                        
+                    
+                    
+                        /*string[] newItemInformation = userInterface.GetNewItemInformation();
+                        if (beverageCollection.FindById(newItemInformation[0]) == null)
                         {
-                            wineItemCollection.AddNewItem(newItemInformation[0], newItemInformation[1], newItemInformation[2]);
+                            beverageCollection.AddNewItem(newItemInformation[0], newItemInformation[1], newItemInformation[2]);
                             userInterface.DisplayAddWineItemSuccess();
                         }
                         else
                         {
                             userInterface.DisplayItemAlreadyExistsError();
-                        }
+                        }*/
                         break;
 
                     case 4:
