@@ -1,7 +1,5 @@
 # Assignment 5 - Update the Assignment 1 with Wines to use a database instead of a CSV
 
-## Due 11-24-2015
-
 ## Author
 
 ## Description
@@ -64,4 +62,6 @@ Solution Requirements:
 
 ## Known Problems, Issues, And/Or Errors in the Program
 
+I think it works. Probably. I was in a rush and this is by far my sloppiest coded/least tested program in a while.
+Base functionality /should/ be there though.
 

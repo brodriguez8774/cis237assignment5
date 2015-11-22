@@ -11,7 +11,7 @@ namespace Assignment5
 {
     class UserInterface
     {
-        const int maxMenuChoice = 5;
+        const int maxMenuChoice = 6;
 
 
         #region Public Methods
@@ -47,7 +47,7 @@ namespace Assignment5
             this.DisplayUserPrompt();
 
             //Get the selection they enter
-            selection = this.GetSelection();
+            selection = this.GetInput();
 
             //While the response is not valid
             while (!this.VerifySelectionIsValid(selection))
@@ -59,7 +59,7 @@ namespace Assignment5
                 this.DisplayUserPrompt();
 
                 //get the selection again
-                selection = this.GetSelection();
+                selection = this.GetInput();
             }
             //Return the selection casted to an integer
             return Int32.Parse(selection);
@@ -74,46 +74,94 @@ namespace Assignment5
             Console.WriteLine();
             Console.WriteLine("What would you like to search for?");
             Console.Write("> ");
-            return Console.ReadLine();
+            return GetInput();
         }
 
-        //Get New Item Information From The User.
+        /// <summary>
+        /// Get New Item Information From The User.
+        /// </summary>
+        /// <returns>String array of new item information.</returns>
         public string[] GetNewItemInformation()
         {
-            Console.WriteLine();
-            Console.WriteLine("What is the new item's Id?");
-            Console.Write("> ");
-            string id = Console.ReadLine();
+            string id = "";
+            bool validBool = false;
+
+            // Loop until user enters valid ID.
+            while (!validBool)
+            {
+                Console.WriteLine();
+                Console.WriteLine("What is the new item's Id? Must be 6 Characters.");
+                Console.Write("> ");
+                id = GetInput();
+
+                // Validates ID.
+                validBool = ValidateID(id);
+
+                // Error message.
+                if (!validBool)
+                {
+                    DisplayItemAlreadyExistsError();
+                }
+            }
+
+            string[] tempString = GetUpdateItemInformation();
+            tempString[0] = id;
+
+            return tempString;
+        }
+
+        /// <summary>
+        /// Gets Update Item information from User.
+        /// </summary>
+        /// <returns>String of update item information.</returns>
+        public string[] GetUpdateItemInformation()
+        {
+            string price = "";
+            string active = "";
+            bool validBool = false;
+
+            // Gets user input for name and pack.
             Console.WriteLine("What is the new item's Name?");
             Console.Write("> ");
-            string name = Console.ReadLine();
+            string name = GetInput();
             Console.WriteLine("What is the new item's Pack?");
             Console.Write("> ");
-            string pack = Console.ReadLine();
-            Console.WriteLine("What is the new item's Price?" + Environment.NewLine +
-                                "Please enter in #.## format");
-            Console.Write("> ");
-            string price = Console.ReadLine();
-            Console.WriteLine("Is the new item going to be immediately Active?" + Environment.NewLine +
-                                "Please enter 'T' or 'F'");
-            Console.Write("> ");
-            string active = Console.ReadLine();
+            string pack = GetInput();
 
-            return new string[] { id, name, pack, price, active };
-        }
+            // Loop until user enters valid Price.
+            validBool = false;
+            while (!validBool)
+            {
+                Console.WriteLine("What is the new item's Price?" + Environment.NewLine +
+                                    "Please enter in #.## format");
+                Console.Write("> ");
+                price = GetInput();
 
-        //Display Import Success
-        public void DisplayImportSuccess()
-        {
-            Console.WriteLine();
-            Console.WriteLine("Wine List Has Been Imported Successfully");
-        }
+                validBool = ValidatePrice(price);
 
-        //Display Import Error
-        public void DisplayImportError()
-        {
-            Console.WriteLine();
-            Console.WriteLine("There was an error importing the CSV");
+                if (!validBool)
+                {
+                    Console.WriteLine("Invalid Price.");
+                }
+            }
+
+            // Loop until user enters valid Active.
+            validBool = false;
+            while (!validBool)
+            {
+                Console.WriteLine("Is the new item going to be immediately Active?" + Environment.NewLine +
+                                    "Please enter 'T' or 'F'");
+                Console.Write("> ");
+                active = GetInput().ToLower();
+                validBool = ValidateActive(active);
+
+                if (!validBool)
+                {
+                    Console.WriteLine("Invalid Input");
+                }
+            }
+
+            return new string[] { "a", name, pack, price, active };
         }
 
         /// <summary>
@@ -123,14 +171,18 @@ namespace Assignment5
         public void DisplayAllListItems(GenericLinkedList<string> allItemsOutput)
         {
             Console.WriteLine();
-            /*foreach (string itemOutput in allItemsOutput)
+            int indexInt = 0;
+            while (indexInt < allItemsOutput.Length)
             {
-                Console.WriteLine(itemOutput);
+                Console.WriteLine(allItemsOutput.Retrieve(1).Data);
                 allItemsOutput.DeQueue();
-            }*/
+                indexInt++;
+            }
         }
 
-        //Display All Items Error
+        /// <summary>
+        /// Display All Items Error.
+        /// </summary>
         public void DisplayAllItemsError()
         {
             Console.WriteLine();
@@ -138,7 +190,7 @@ namespace Assignment5
         }
 
         /// <summary>
-        /// Display Item Found Success
+        /// Display Item Found Success.
         /// </summary>
         /// <param name="itemInformation"></param>
         public void DisplayItemFound(string itemInformation)
@@ -155,14 +207,18 @@ namespace Assignment5
             Console.WriteLine("A Match was not found");
         }
 
-        //Display Add Wine Item Success
+        /// <summary>
+        /// Display Add Wine Item Success.
+        /// </summary>
         public void DisplayAddWineItemSuccess()
         {
             Console.WriteLine();
             Console.WriteLine("The Item was successfully added");
         }
 
-        //Display Item Already Exists Error
+        /// <summary>
+        /// Display Item Already Exists Error
+        /// </summary>
         public void DisplayItemAlreadyExistsError()
         {
             Console.WriteLine();
@@ -176,8 +232,7 @@ namespace Assignment5
         /// <returns>String of Beverage's information.</returns>
         public static string ItemToString(Beverage beverage)
         {
-            return beverage.id + " " + beverage.name + Environment.NewLine +
-                    beverage.pack + " " + beverage.price + " " + beverage.active;
+            return beverage.id.Trim() + "   " + beverage.name.Trim() + "   " + beverage.pack.Trim() + "   " + beverage.price.ToString().Trim() + "   " + beverage.active.ToString().Trim();
         }
 
         #endregion
@@ -194,11 +249,12 @@ namespace Assignment5
             Console.WriteLine();
             Console.WriteLine("What would you like to do?");
             Console.WriteLine();
-            Console.WriteLine("1. Load Wine List From CSV");
-            Console.WriteLine("2. Print The Entire List Of Items");
-            Console.WriteLine("3. Search For An Item");
-            Console.WriteLine("4. Add New Item To The List");
-            Console.WriteLine("5. Exit Program");
+            Console.WriteLine("1. Print The Entire List Of Items");
+            Console.WriteLine("2. Search For An Item");
+            Console.WriteLine("3. Add New Item To The List");
+            Console.WriteLine("4. Update Item on list");
+            Console.WriteLine("5. Remove Item from List");
+            Console.WriteLine("6. Exit Program");
         }
 
         /// <summary>
@@ -223,9 +279,9 @@ namespace Assignment5
         /// Get input from the user.
         /// </summary>
         /// <returns>String of user's input.</returns>
-        private string GetSelection()
+        private string GetInput()
         {
-            return Console.ReadLine();
+            return Console.ReadLine().Trim();
         }
 
         /// <summary>
@@ -259,6 +315,64 @@ namespace Assignment5
 
             //Return the reutrnValue
             return returnValue;
+        }
+
+        /// <summary>
+        /// Checks for valid ID input.
+        /// </summary>
+        /// <param name="id">Input ID.</param>
+        /// <returns>If Id is valid.</returns>
+        private bool ValidateID(string id)
+        {
+            // Load up beverage collection for single method.
+            BeverageCollection beverageCollection = BeverageCollection.get();
+
+            // If ID is not found within beverage database, end loop.
+            if (beverageCollection.FindById(id) == null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks for valid Price input.
+        /// </summary>
+        /// <param name="price">Input Price.</param>
+        /// <returns>If Price is valid.</returns>
+        private bool ValidatePrice(string price)
+        {
+            try
+            {
+                decimal priceDecimal = Convert.ToDecimal(price);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks for valid Active input.
+        /// </summary>
+        /// <param name="active">Input Active.</param>
+        /// <returns>If Active is valid.</returns>
+        private bool ValidateActive(string active)
+        {
+            // If input is either 't' or 'f', return true.
+            if (active == "t")
+            {
+                return true;
+            }
+
+            if (active == "f")
+            {
+                return true;
+            }
+
+            return false;
         }
 
         #endregion

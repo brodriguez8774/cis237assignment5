@@ -23,25 +23,30 @@ namespace Assignment5
 
 
 
-        #region Constructor
+        #region Singleton Constructor
+
+        private static BeverageCollection beverageCollection;
+
+        /// <summary>
+        /// Returns BeverageCollection Singleton.
+        /// </summary>
+        /// <returns>BeverageCollection Singleton.</returns>
+        public static BeverageCollection get()
+        {
+            if (beverageCollection == null)
+            {
+                beverageCollection = new BeverageCollection();
+            }
+            return beverageCollection;
+        }
 
         /// <summary>
         /// Base Constructor.
         /// </summary>
-        public BeverageCollection()
+        private BeverageCollection()
         {
 
         }
-
- /*       /// <summary>
-        /// //Constuctor which needs size of the collection.
-        /// </summary>
-        /// <param name="size"></param>
-        public WineItemCollection(int size)
-        {
-            wineItems = new WineItem[size];
-            wineItemsLength = 0;
-        }*/
 
         #endregion
 
@@ -58,13 +63,13 @@ namespace Assignment5
         /// <param name="price">Price of beverage pack.</param>
         /// <param name="active">Bool for beverage currently active or not.</param>
         /// <returns>Bool indicating if item was added.</returns>
-        public bool AddNewItem(string id, string name, string pack, decimal price, Boolean active)
+        public bool AddNewItem(string id, string name, string pack, decimal price, bool active)
         {
             // Attempt to create a new beverage.
             try
             {
                 // If ID is not already in database.
-                if (FindById(id) != null)
+                if (FindById(id) == null)
                 {
                     // Create new beverage with passed in information.
                     Beverage beverage = new Beverage();
@@ -73,6 +78,9 @@ namespace Assignment5
                     beverage.pack = pack;
                     beverage.price = price;
                     beverage.active = active;
+
+                    beverageEntities.Beverages.Add(beverage);
+                    beverageEntities.SaveChanges();
                     return true;
                 }
                 else
@@ -86,39 +94,53 @@ namespace Assignment5
             }
         }
         
-        //Get The Print String Array For All Items
+        public bool UpdateItem(string id, string name, string pack, decimal price, Boolean active)
+        {
+            // Attempt to update Beverage.
+            try
+            {
+                // Doublecheck that beverage exists.
+                Beverage beverageToUpdate = beverageEntities.Beverages.Find(id);
+
+                // Update beverage.
+                if (beverageToUpdate != null)
+                {
+                    beverageToUpdate.name = name;
+                    beverageToUpdate.pack = pack;
+                    beverageToUpdate.price = price;
+                    beverageToUpdate.active = active;
+                }
+                else
+                {
+                    return false;
+                }
+
+                // Save to database.
+                beverageEntities.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Get The Print String Array For All Items
+        /// </summary>
+        /// <returns>Linked list of all items information.</returns>
         public GenericLinkedList<string> GetStringListForAllItems()
         {
             //Create a linked list to hold all of the printed strings
-            GenericLinkedList<string> beveragesList = new GenericLinkedList<string>();
+            GenericLinkedList<string> beveragesList = new GenericLinkedList<string>();          
 
-            
-
-            // Loops through table and adds each to list.
+            // Loops through list and adds each to list.
             foreach (Beverage beverage in beverageEntities.Beverages)
             {
                 beveragesList.Enqueue(UserInterface.ItemToString(beverage));
             }
 
-            /*//set a counter to be used
-            int counter = 0;
-
-            //If the wineItemsLength is greater than 0, create the array of strings
-            if (wineItemsLength > 0)
-            {
-                //For each item in the collection
-                foreach (WineItem wineItem in wineItems)
-                {
-                    //if the current item is not null.
-                    if (wineItem != null)
-                    {
-                        //Add the results of calling ToString on the item to the string array.
-                        allItemStrings[counter] = wineItem.ToString();
-                        counter++;
-                    }
-                }
-            }*/
-            //Return the array of item strings
+            //Return the List of item strings
             return beveragesList;
         }
 
@@ -138,7 +160,7 @@ namespace Assignment5
             // If beverage is found in database
             if (foundBeverage != null)
             {
-                UserInterface.ItemToString(foundBeverage);
+                returnString = UserInterface.ItemToString(foundBeverage);
             }
             
             //Return the returnString

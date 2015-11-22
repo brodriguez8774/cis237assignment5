@@ -9,15 +9,6 @@
  * Martin Fowler: Patterns of Enterprise Application Architecture
  */
 
-
-/*
- * The Menu Choices Displayed By The UI
- * 1. Load Wine List From CSV
- * 2. Print The Entire List Of Items
- * 3. Search For An Item
- * 4. Add New Item To The List
- * 5. Exit Program
- */
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,20 +30,29 @@ namespace Assignment5
             //Create an instance of the UserInterface class
             UserInterface userInterface = new UserInterface();
 
-            //Create an instance of the WineItemCollection class
-            BeverageCollection beverageCollection = new BeverageCollection();
+            //Create an instance of the BeverageCollection class
+            BeverageCollection beverageCollection = BeverageCollection.get();
 
             // Load in/connect to Beverages from database.
             BeverageEntities beverageEntities = new BeverageEntities();
 
-            //Display the Welcome Message to the user
+            //Display the Welcome Message to the user and make sure can connect.
             userInterface.DisplayWelcomeGreeting();
+            try
+            {
+                beverageCollection.GetStringListForAllItems();
+                userInterface.DisplayWelcomeGreetingConnected();
+            }
+            catch
+            {
+                Console.WriteLine("Database Connection Error! Program may not function correctly.");
+            }
 
             //Display the Menu and get the response. Store the response in the choice integer
             //This is the 'primer' run of displaying and getting.
             int choice = userInterface.DisplayMenuAndGetResponse();
 
-            while (choice != 5)
+            while (choice != 6)
             {
                 switch (choice)
                 {
@@ -73,50 +73,129 @@ namespace Assignment5
 
                     case 2:
                         //Search For An Item
-                        string searchQuery = userInterface.GetSearchQuery();
+                        try
+                        {
+                            string searchQuery = userInterface.GetSearchQuery();
 
-                        Beverage beverageToFind = beverageEntities.Beverages.Where(a => a.id == searchQuery).First();
-                        Beverage otherBeverageToFind = beverageEntities.Beverages.Find(searchQuery);
+                            Beverage beverageToFind = beverageEntities.Beverages.Where(a => a.id == searchQuery).First();
+                            Beverage otherBeverageToFind = beverageEntities.Beverages.Find(searchQuery);
 
-                        if (otherBeverageToFind != null)
-                        {
-                            userInterface.DisplayItemFound(otherBeverageToFind.id);
+                            if (beverageToFind != null)
+                            {
+                                userInterface.DisplayItemFound(UserInterface.ItemToString(beverageToFind));
+                            }
+                            else
+                            {
+                                userInterface.DisplayItemFoundError();
+                            }
                         }
-                        else
+                        catch
                         {
-                            userInterface.DisplayItemFoundError();
+                            Console.WriteLine("Error");
                         }
-
-                        /*string itemInformation = beverageCollection.FindById(searchQuery);
-                        if (itemInformation != null)
-                        {
-                            userInterface.DisplayItemFound(itemInformation);
-                        }
-                        else
-                        {
-                            userInterface.DisplayItemFoundError();
-                        }*/
                         break;
 
                     case 3:
                         //Add A New Item To The List
-                        
-                    
-                    
-                        /*string[] newItemInformation = userInterface.GetNewItemInformation();
-                        if (beverageCollection.FindById(newItemInformation[0]) == null)
+                        string[] newItemString = userInterface.GetNewItemInformation();
+
+                        decimal aDecimal = Convert.ToDecimal(newItemString[3]);
+                        bool aBool = false;
+                        if (newItemString[4] == "t")
                         {
-                            beverageCollection.AddNewItem(newItemInformation[0], newItemInformation[1], newItemInformation[2]);
+                            aBool = true;
+                        }
+                        if (beverageCollection.AddNewItem(newItemString[0], newItemString[1], newItemString[2], aDecimal, aBool))
+                        {
                             userInterface.DisplayAddWineItemSuccess();
                         }
                         else
                         {
-                            userInterface.DisplayItemAlreadyExistsError();
-                        }*/
+                            Console.WriteLine("Error");
+                        }
                         break;
 
                     case 4:
-                        // Delete item from list.
+                        // Update Item on List.
+                        // Basicall combines add item and search for item.
+                        // Redundant code but too lazy to put into methods cuz coding in main is annoying.
+
+
+                        //Search For An Item
+                        try
+                        {
+                            string updateSearchQuery = userInterface.GetSearchQuery();
+
+                            Beverage beverageToUpdate = beverageEntities.Beverages.Where(aa => aa.id == updateSearchQuery).First();
+                            Beverage otherBeverageToUpdate = beverageEntities.Beverages.Find(updateSearchQuery);
+
+                            if (beverageToUpdate != null)
+                            {
+                                userInterface.DisplayItemFound(beverageToUpdate.id);
+                            }
+                            else
+                            {
+                                userInterface.DisplayItemFoundError();
+                            }
+
+                            //Update A New Item To The List
+                            string[] updateItemString = userInterface.GetUpdateItemInformation();
+
+                            decimal anDecimal = Convert.ToDecimal(updateItemString[3]);
+                            bool anBool = false;
+                            if (updateItemString[4] == "t")
+                            {
+                                anBool = true;
+                            }
+                            if (beverageCollection.UpdateItem(updateItemString[0], updateItemString[1], updateItemString[2], anDecimal, anBool))
+                            {
+                                userInterface.DisplayAddWineItemSuccess();
+                            }
+                            else
+                            {
+                                Console.WriteLine("Error");
+                            }
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Errorr");
+                        }
+
+
+                        
+                        break;
+                    case 5:
+                        // Delete Item on List.
+                        // Again, basically duplicates search.
+                        //Search For An Item
+                        try
+                        {
+                            string aasearchQuery = userInterface.GetSearchQuery();
+
+                            Beverage aabeverageToFind = beverageEntities.Beverages.Where(aaa => aaa.id == aasearchQuery).First();
+                            Beverage aaotherBeverageToFind = beverageEntities.Beverages.Find(aasearchQuery);
+
+                            if (aabeverageToFind != null)
+                            {
+                                userInterface.DisplayItemFound(aabeverageToFind.id);
+
+                                // Once found, remove.
+                                beverageEntities.Beverages.Remove(aabeverageToFind);
+
+                                beverageEntities.SaveChanges();
+                                Console.WriteLine("Item Removed!");
+                            }
+                            else
+                            {
+                                userInterface.DisplayItemFoundError();
+                            }
+                        }
+                        catch
+                        {
+                            userInterface.DisplayItemFoundError();
+                        }
+
+                        
                         break;
                 }
 
